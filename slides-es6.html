@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ECMAScript 6</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <style type="text/css">
+    @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+    @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+    @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+    body { font-family: 'Droid Serif'; }
+    h1, h2, h3 {
+      font-family: 'Yanone Kaffeesatz';
+      font-weight: normal;
+    }
+    .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+    .remark-slide-content{background: transparent;}
+    .remark-slide {
+      background: url(http://lab.empirio.no/media/images/background.png) #fff center center no-repeat;
+      background-size: cover;
+    }
+    .remark-slide-number{color: #fff;font-size: 1rem;font-weight: bold;}
+
+  </style>
+</head>
+<body>
+  <textarea id="source" style="display:none;">
+
+    class: center, middle
+
+    # es6
+
+    
+    ![es6](http://blog.makersquare.com/wp-content/uploads/2015/06/es6-logo.png)
+    
+
+
+    ---
+    # O que é ECMAScript?
+    
+    Bem, o ECMAScript 6 (ES6, muitas vezes referido como Harmony) é o sexto grande release da especificação da linguagem ECMAScript. ECMAScript é o nome apropriado para a linguagem que conhecemos por JavaScript.
+ 
+    ---
+    # Considerações antes de optar por ES6
+
+    Antes de você decidir usar ES6 em sua aplicação - em produção, e sem ser apenas para fins de estudo -, há dois questionamentos-chave que penso eu serem importantes:
+
+    ---
+    # ECMAScript 6 
+
+    ### Há uma preocupação com as constantes mudanças na especificação ES6?
+
+    Temos que trabalhar com fatos: a especificação ES6 ainda não está completamente concluída, e por isso, o funcionamento/comportamento de certas características podem mudar facilmente. Isto significa que as ferramentas que você utiliza para fazer com que determinadas features do ES6 funcionem na versão atual do JavaScript também podem mudar - e quebrar seu código existente. Se você pensa que possíveis mudanças na especificação - e respectivamente, quebra de código, sejam uma preocupação importante em sua aplicação, recomendo que pense um pouco mais antes de usar ES6 em produção.
+
+    ---
+    # ECMAScript 6
+
+    ### Quais são as plataformas que almejo? Há uma necessidade de manter compatibilidade com dispositivos e navegadores mais antigos?
+
+    As plataformas que sua aplicação visa a atingir - dispositivos, navegadores etc. - devem ser levadas em conta ao decidir pelo uso de ES6. Se você é um pobre coitado, sofredor, frustado desenvolvedor que ainda tem de lidar com navegadores como IE6 ou IE7, então você pode acabar tendo de usar apenas um subset de recursos ES6.
+
+    E outro ponto: usar ES6 requer um transpiler ou um shim (abordaremos com mais detalhes mais adiante). Se você precisa usar um transpiler, ele vai afetar tanto a sua capacidade de depurar o código quanto seu próprio desempenho.
+     
+    ---
+    # ECMAScript 6
+     
+    ### Depuração
+
+    Se você usa um transpiler, este irá gerar arquivos JS compilados que, às vezes, podem ser consideravelmente difíceis de se entender - o que pode tornar dificultar um pouco a depuração.
+
+    Felizmente, navegadores modernos suportam source maps - o que significa que você, em teoria, não precisaria se preocupar com esse aspecto, uma vez que o source map permite com que você veja o código ES6 original, em vez do código compilado para ES5.
+
+    Porém, se você almeja plataformas - ou browsers - mais antigas, isso pode ser um problema - uma vez que elas podem não suportar source maps. Muitos navegadores mais antigos até suportam a especificação ES5 muito bem - e o código gerado vai funcionar neles, mas se você precisar depurar nestes, pode vir a ter dores de cabeça.
+
+    ---
+    # ECMAScript 6
+
+    ### Desempenho
+
+    Os transpilers ES6 em geral não fazem otimizações de desempenho com base no navegador a executar o código. Em alguns casos, isto pode resultar em código que não executa tão bem em alguns navegadores. Se você está trabalhando em algo que precisa ter um desempenho muito elevado, tais como jogos, o JavaScript padrão pode ser a melhor opção. No entanto, isto não significa que você não deve usar ES6 em tudo: você pode muito bem simplesmente evitar o uso de recursos ES6 em determinadas partes do seu código que podem ser consideradas críticas.
+
+    ---
+    # ECMAScript 6
+    ### Transpilers? Shims?
+
+    Então, após se questionar as perguntas anteriores, você optou por usar ES6. Mas por onde começar? Bem, você precisa fazer uma escolha: quais recursos do ES6 quer usar? A ES6 fornece tanto uma nova sintaxe, como o let e o sistema de módulos, mas também nos fornece recursos como novos objetos e funções adicionais, tais como promises. 
+
+    Se você quiser usar a nova sintaxe, você precisa de um transpiler. Se você só quer usar os objetos e os recursos mencionados antes, então você pode usar um shim. Shims são mais simples e fáceis de se trabalhar com, como você só precisa incluí-lo em sua página ou aplicação Node antes de outros scripts. Relembrando: um shim não pode suportar recursos sintáticos. Se você quiser estes, você precisa então de um transpiler.
+
+    Vamos ver um pouco sobre cada um deles:
+
+    ---
+    # ECMAScript 6
+    ### Shims
+    
+    Para nossos exemplos com shims, usaremos o ES6 Shim.
+
+    ### Configurando o ES6 Shim no servidor
+
+    Configurar o ES6 Shim no _node.js_, _io.js_, ou outro workflow que seja gerenciado pelo npm é um processo muito simples: rode o comando npm install es6-shim e inclua require('es6-shim'); em seus scripts.
+
+
+    ---
+    # ECMAScript 6
+    ### Shims
+    ### Configurando o ES6 Shim no navegador
+
+    O ES6 Shim tem um suporte a navegadores razoavelmente grande - algumas features estão disponíveis até para anteriores ao IE8! A maneira mais simples para começar no navegador é apenas incluir uma tag de script em sua página referenciando para o caminho onde está o arquivo principal do shim - que pode ser encontrado no repositório oficial:
+
+        <script src="/es6-shim.js"></script>
+
+    Se você usa o Bower como gerenciador de pacotes, também pode ser uma boa opção: bower install es6-shim.
+
+    Em ambos os casos (servidor e navegador) sua maior preocupção é certificar-se de que o shim é carregado antes de quaisquer scripts que dependem dos recursos do ES6
+
+    ---
+    # ECMAScript 6
+    ### Transpilers
+    
+    Para nossos exemplos com transpilers, usaremos principalmente o [Traceur](https://github.com/google/traceur-compiler/), que é um projeto do Google que visa pegar código ES6 e compilar para código ES5 compatível com os navegadores modernos em suas configurações padrão (as configurações de seus usuários terão). O Traceur é um projeto muito ativo e seus recursos são atualizados regularmente.
+
+    Porém, é válido lembrar que há uma série de outras opções de [transpilers](https://github.com/addyosmani/es6-tools#transpilers). Inclusive, o [Babel](https://github.com/babel/babel) (ou 6to5), possui boas vantagens frente ao Traceur
+
+    ---
+
+
+    # ECMAScript 6
+    ###es6
+
+    ECMAScript 6 é a próxima versão do padrão ECMAScript. A norma deverá ser ratificada em Dezembro de 2014. ES6 é um upgrade significativo na linguagem, e a primeira atualização desde que foi padronizada em 2009. A Veja a implementação dessas funcionalidades noas principais engines de javascript no link [Tabela de Compatibilidade do ECMAScript 6](http://kangax.github.io/es5-compat-table/es6/).
+
+    Veja o [proposta de padrão ES6] (https://people.mozilla.org/ ~ jorendorff/es6-draft.html) para a especificação completa da linguagem ECMAScript 6.
+
+
+    ---
+    # Funcionalidades
+    ES inclui as seguintes novas funcionalidades:
+    - [arrows](#arrows)
+    - [classes](#classes)
+    - [enhanced object literals](#enhanced-object-literals)
+    - [template strings](#template-strings)
+    - [destructuring](#destructuring)
+    - [default + rest + spread](#default--rest--spread)
+    - [let + const](#let--const)
+    - [iterators + for..of](#iterators--forof)
+    - [generators](#generators)
+    - [comprehensions](#comprehensions)
+    - [unicode](#unicode)
+    - [modules](#modules)
+    - [module loaders](#module-loaders)
+    - [map + set + weakmap + weakset](#map--set--weakmap--weakset)
+   
+
+    ---
+
+    # Funcionalidades
+    - [map + set + weakmap + weakset](#map--set--weakmap--weakset)
+    - [proxies](#proxies)
+    - [symbols](#symbols)
+    - [subclassable built-ins](#subclassable-built-ins)
+    - [promises](#promises)
+    - [math + number + string + object APIs](#math--number--string--object-apis)
+    - [binary and octal literals](#binary-and-octal-literals)
+    - [reflect api](#reflect-api)
+    - [tail calls](#tail-calls)
+    
+    ---
+
+    ## Funcionalidades ECMAScript 6
+    ### Arrows
+    _Arrows_ são abreviações de funções usando a sintaxe `=>`. Elas são semelhantes semanticamente  ao recurso equivalente do C#, Java 8 e do CoffeeScript. Elas supotam expressões ou conjuntos de instruções. Ao conrário de _function_, _arrows_ compartilham o mesmo `this` que o do código que o envolve.
+
+        // Expressões
+        var pares   = evens.map(v => v + 1);
+        var numeros = evens.map((v, i) => v + i);
+
+        // Conjuntos de instruções
+        numeros.forEach(v => {
+          if (v % 5 === 0)
+            listaCincos.push(v);
+        });
+
+        // "this" léxico
+        var joao = {
+          _nome: "João",
+          _amigos: [],
+          listaAmigos() {
+            this._amigos.forEach(f =>
+              console.log( this._nome + " conhece " + f) );
+          }
+        }
+        
+    ---
+
+    ### Classes
+    Classes ES6 são o padrão _prototype_ melhorado. Ter uma única e conveniente forma declarativa fazem os padrões de classes mais fáceis de usar e icentivam a interoperabilidade. Classes suportam herança no modelo _ prototype, _super calls_, instanciamento, métodos estáticos e construtores.
+
+        class SkinnedMesh extends THREE.Mesh {
+            constructor(geometry, materials) {
+                super(geometry, materials);
+
+                this.idMatrix = SkinnedMesh.defaultMatrix();
+                this.bones = [];
+                this.boneMatrices = [];
+                //...
+            }
+            update(camera) {
+                //...
+                super.update();
+            }
+            static defaultMatrix() {
+                return new THREE.Matrix4();
+            }
+        }
+
+    ---
+
+
+    ### Object Literals aprimorados
+
+        var obj = {
+            // __proto__
+            __proto__: theProtoObj,
+            // Shorthand for ‘handler: handler’
+            handler,
+            // Methods
+            toString() {
+             // Super calls
+             return "d " + super.toString();
+            },
+            // Computed (dynamic) property names
+            [ 'prop_' + (() => 42)() ]: 42
+        };
+
+    ---
+
+    ### Template Strings
+
+    Template strings tornam muito fácil gerar _strings_. Ë semelhante à interpolação de _strings_ do Perl, Python e outros. Opcionalmente podmeos adicionar uma _tag_ que permitem a construção de uma string personalizada, evitando ataques com inserção de código ou montando estruturas de dados a partir do conteúdo de _strings_.
+
+    
+        // Construção básica de uma string literal
+        `Em javascript '\n' é uam quebra de linha.`
+
+        // Strings multilinha
+        `Isto não funciona
+         em Javascript.`
+
+         // Contruindo uma query ao DOM
+        `Olá ${nome}, como está o ${nome_amigo}?`
+
+        // Montar um prefixo de requisição HTTP para interpretar as substituições e construção
+        GET`http://foo.org/bar?a=${a}&b=${b}
+            Content-Type: application/json
+            X-Credentials: ${credentials}
+            { "foo": ${foo},
+              "bar": ${bar}}`(myOnReadyStateChangeHandler);
+      
+
+
+    ---
+
+    ### Destructuring
+
+    Destructuring permite vincular usando padrões de expressões regulares, com suporte à _arrays_ e _objects_.  Destructuring é _fail-soft_, semelhante à busca padrão em objetos `foo["bar"]`, retornando o valor  `undefined`  quando não encontra.
+
+        // list matching
+        var [a, , b] = [1,2,3];
+
+        // object matching
+        var { op: a, lhs: { op: b }, rhs: c }
+               = getASTNode()
+
+        // object matching shorthand
+        // binds `op`, `lhs` and `rhs` in scope
+        var {op, lhs, rhs} = getASTNode()
+
+        // Can be used in parameter position
+        function g({name: x}) {
+          console.log(x);
+        }
+        g({name: 5})
+
+        // Fail-soft destructuring
+        var [a] = [];
+        a === undefined;
+
+    ---
+
+    ### Default + Rest + Spread
+
+    Valores padrão nas chamadas de funções.  Transformação de um array em argumentos consegutivos em uma chamada de função, Vincular parametros sequenciais em um _array_. Substitui a necessidade de _arguments_ e  casos mais comuns.
+
+        function f(x, y=12) {
+          // y is 12 if not passed (or passed as undefined)
+          // y vale 12 se não for passado (ou passado como undefined)
+          return x + y;
+        }
+        f(3) == 15
+
+        function f(x, ...y) {
+          // y é um Array
+          return x * y.length;
+        }
+        f(3, "hello", true) == 6
+
+        function f(x, y, z) {
+          return x + y + z;
+        }
+        // Passa cada elemento do array como um argumento
+        f(...[1,2,3]) == 6
+
+    ---
+    ### Let + Const
+
+    Blocos com escopo vinculado. `let` é o novo `var`.  `const` é definido uam vez apenas.  Restrições estáticas previnem o uso antes da declaração.
+
+        function f() {
+          {
+            let x;
+            {
+              // funciona, nome com escopo definido no bloco
+              const x = "sneaky";
+              // error, const
+              x = "foo";
+            }
+            // erro, já definido no bloco
+            let x = "inner";
+          }
+        }
+
+    ---
+    ### Iterators + For..Of
+   
+    Objetos Iterator permitem  iterações como CLR IEnumerable ou Java Iteratable.  Generalizar o `for..in`  para uma iteração customizada com `for..of`.  Não é necessário executar em um _array_, permitindo padrões mais flexíveis, como LINQ.
+
+         let fibonacci = {
+          [Symbol.iterator]() {
+            let pre = 0, cur = 1;
+            return {
+              next() {
+                [pre, cur] = [cur, pre + cur];
+                return { done: false, value: cur }
+              }
+            }
+          }
+        }
+
+        for (var n of fibonacci) {
+          // para a sequencia em 1000
+          if (n > 1000)
+            break;
+          print(n);
+        }
+
+
+    ---
+
+    ### Iterators + For..Of
+
+    A sintaxe de _Iteration_ é baseada nas interfaces (usando sintaxe do [TypeScript](http://typescriptlang.org) para demonstração apenas):
+
+
+        interface IteratorResult {
+          done: boolean;
+          value: any;
+        }
+        interface Iterator {
+          next(): IteratorResult;
+        }
+        interface Iterable {
+          [Symbol.iterator](): Iterator
+        }
+ 
+
+    ---
+
+    ### Generators
+
+    _Generators_ simplificam a criação de iterações usando `function*` e `yield`. Uma func'ão declarada como _funcion*_ retorna uma instancia de um _Generator_. _Generators_ são subtipos de _iterators_ que incluem métodos adicionais,  `next` e `throw`. Eles permitem que valores sejam retornados ao _generator_, então `yield` é uma forma de expressão que retorna um valor.
+
+    Nota: Também pode ser usados para permitir 'esperar' como em programação assíncrona, veja também a proposta do ES7, `await`.
+
+
+        var fibonacci = {
+          [Symbol.iterator]: function*() {
+            var pre = 0, cur = 1;
+            for (;;) {
+              var temp = pre;
+              pre = cur;
+              cur += temp;
+              yield cur;
+            }
+          }
+        }
+
+        for (var n of fibonacci) {
+          // truncate the sequence at 1000
+          if (n > 1000)
+            break;
+          print(n);
+        }
+
+    ---
+
+    ### Generators
+
+    A interface do generator é (usando a sintaxe do  [TypeScript](http://typescriptlang.org) para demonstração apenas):
+
+
+        interface Generator extends Iterator {
+            next(value?: any): IteratorResult;
+            throw(exception: any);
+        }
+
+
+    ---
+    ### Comprehensions
+    _Comprehensions_ de arrays e _generator_ fornecem um processamento declarativo simples, semelhante ao usado em muitos padrões de programação funcional.
+
+        // Array comprehensions
+        var results = [
+          for(c of customers)
+            if (c.city == "Seattle")
+              { name: c.name, age: c.age }
+        ]
+
+        // Generator comprehensions
+        var results = (
+          for(c of customers)
+            if (c.city == "Seattle")
+              { name: c.name, age: c.age }
+        )
+
+    ---
+    ### Unicode
+
+
+    Adições retroativas para suporte completo a Unicode, incluindo a nova forma literal do unicode em strings e o novo modo do RegExp `u`, para lidar com pontos no código, assim como novas APIs para processar _strings_ em códigos 21bit. Essas adições auxiliam a contrução de _apps_ globais em Javascript.
+
+        // o mesmo que no ES5.1
+        "𠮷".length == 2
+
+        // novo comportamento RegExp, opcionalopt-in ‘u’
+        "𠮷".match(/./u)[0].length == 2
+
+        // nova sintaxe
+        "\u{20BB7}"=="𠮷"=="\uD842\uDFB7"
+
+        // nova opção para string
+        "𠮷".codePointAt(0) == 0x20BB7
+
+        // for-of itera em pontos de código
+        for(var c of "𠮷") {
+          console.log(c);
+        }
+
+
+    ---
+
+    ### Modules
+   
+    Suporte nativo para módulos e definição de componentes. Códifica padrões de carregamento de módulo populares (AMD, CommonJS). Comportamento de carregamento em tempo de execução definido por um padrão no _host_. Modelos implícitos assíncronos , nenhum código é executado até que os módulos requisitados estejam disponíveis e processados.
+
+    
+        // lib/math.js
+        export function sum(x, y) {
+          return x + y;
+        }
+        export var pi = 3.141593;
+       
+
+        // app.js
+        module math from "lib/math";
+        alert("2π = " + math.sum(math.pi, math.pi));
+       
+
+        // otherApp.js
+        import {sum, pi} from "lib/math";
+        alert("2π = " + sum(pi, pi));
+
+
+    ---
+
+    ### Modules        
+
+    Algumas funcionalidades adicionais incluem `export default` e `export *`:
+
+        // lib/mathplusplus.js
+        export * from "lib/math";
+        export var e = 2.71828182846;
+        export default function(x) {
+            return Math.exp(x);
+        }
+
+        // app.js
+        module math from "lib/mathplusplus";
+        import exp from "lib/mathplusplus";
+        alert("2π = " + exp(math.pi, math.e));
+
+
+    ---
+    ### Module Loaders
+
+    _Module loaders_ suportam:
+    - carregamento dinâmico
+    - isolamento de estado
+    - isolamento de _namespace_ global
+    - _hooks_ de compilação
+    - virtualização aninhada 
+
+    O _module loader_ padrão pode ser configurado e novos _loaders_ podem ser contruídos para avaliar e carregar código em contexto isolado ou restrito
+
+        // Carregamento dinamico – ‘System’ é o loader padrão
+        System.import('lib/math').then(function(m) {
+          alert("2π = " + m.sum(m.pi, m.pi));
+        });
+
+        // Cria sandboxes de execução – novos Loaders
+        var loader = new Loader({
+          global: fixup(window) // replace ‘console.log’
+        });
+        loader.eval("console.log('hello world!');");
+
+        // Manipulação do módulo cache
+        System.get('jquery');
+        System.set('jquery', Module({$: $})); // WARNING: não finalizado ainda
+
+    ---
+    ### Map + Set + WeakMap + WeakSet
+    
+
+    Estruturas de dados eficientes para algorítimos comuns. _WeakMaps_ fornecem um mapa seguro de <objeto-chave class=""></objeto-chave>
+
+        // Sets
+        var s = new Set();
+        s.add("hello").add("goodbye").add("hello");
+        s.size === 2;
+        s.has("hello") === true;
+
+        // Maps
+        var m = new Map();
+        m.set("hello", 42);
+        m.set(s, 34);
+        m.get(s) == 34;
+
+        // Weak Maps
+        var wm = new WeakMap();
+        wm.set(s, { extra: 42 });
+        wm.size === undefined
+
+        // Weak Sets
+        var ws = new WeakSet();
+        ws.add({ data: 42 });
+        // Because the added object has no other references, it will not be held in the set
+
+    ---
+    ### Proxies
+    
+    _Proxies_ permitem a criação de objetos com todos os comportamentos disponíveis no opjeto que o contém, Podem ser usados para interceptação, virtualização de objetos, _logs_, _profiles_, etc.
+
+        // Proxy em um objeto normal
+        var target = {};
+        var handler = {
+          get: function (receiver, name) {
+            return `Hello, ${name}!`;
+          }
+        };
+
+        var p = new Proxy(target, handler);
+        p.world === 'Hello, world!';
+
+    ---
+    ### Proxies
+
+        // Proxy em  um objeto função
+        var target = function () { return 'I am the target'; };
+        var handler = {
+          apply: function (receiver, ...args) {
+            return 'I am the proxy';
+          }
+        };
+
+        var p = new Proxy(target, handler);
+        p() === 'I am the proxy';
+
+    ---
+    ### Proxies
+
+    Existem métodos disponíveis para todas as meta-operaçoes em tempo de execução:
+
+   
+        var handler =
+        {
+          get:...,
+          set:...,
+          has:...,
+          deleteProperty:...,
+          apply:...,
+          construct:...,
+          getOwnPropertyDescriptor:...,
+          defineProperty:...,
+          getPrototypeOf:...,
+          setPrototypeOf:...,
+          enumerate:...,
+          ownKeys:...,
+          preventExtensions:...,
+          isExtensible:...
+        }
+
+    ---
+    ### Symbols
+  
+    _Symbols_ permitem controle sobre o estado do objeto. _Symbols_ permitem que propriedades sejam indexadas tanto por _string_ (como no ES5) como _symbol_. _Symbols_ são um novo tipo primitivo. Parâmetro opcional, `name` , usado em _debug_, mas não é parte da identidade. _Symbols_ são únicos (como gensym), mas não são privados já que são expostos em funcionalidades como`Object.getOwnPropertySymbols`.
+
+        (function() {
+
+          // module scoped symbol
+          // symbol no escopo do módulo
+          var key = Symbol("key");
+
+          function MyClass(privateData) {
+            this[key] = privateData;
+          }
+
+          MyClass.prototype = {
+            doStuff: function() {
+              ... this[key] ...
+            }
+          };
+
+        })();
+
+        var c = new MyClass("hello")
+        c["key"] === undefined
+    
+    ---
+    ### Subclassable Built-ins
+    
+    No ES6, objetos nativos como `Array`, `Date` e DOM `Element`s podem ter subclasses.
+
+    Contrução de objetos para uma função chamada  `Ctor` agora levam duas etapas (ambas disparadas virtualmente):
+    - Chame `Ctor[@@create]` para alocar o objeto, installing any special behavior
+    - Invoke constructor on new instance to initialize
+
+    The known `@@create` symbol is available via `Symbol.create`.  Built-ins now expose their `@@create` explicitly.
+
+        // Pseudo-code of Array
+        class Array {
+            constructor(...args) { /* ... */ }
+            static [Symbol.create]() {
+                // Install special [[DefineOwnProperty]]
+                // to magically update 'length'
+            }
+        }
+
+    ---
+    ### Subclassable Built-ins
+
+        // User code of Array subclass
+        class MyArray extends Array {
+            constructor(...args) { super(...args); }
+        }
+
+        // Two-phase 'new':
+        // 1) Call @@create to allocate object
+        // 2) Invoke constructor on new instance
+        var arr = new MyArray();
+        arr[1] = 12;
+        arr.length == 2
+
+    ---
+    ### Math + Number + String + Object APIs
+
+    Many new library additions, including core Math libraries, Array conversion helpers, and Object.assign for copying.
+
+    
+        Number.EPSILON
+        Number.isInteger(Infinity) // false
+        Number.isNaN("NaN") // false
+
+        Math.acosh(3) // 1.762747174039086
+        Math.hypot(3, 4) // 5
+        Math.imul(Math.pow(2, 32) - 1, Math.pow(2, 32) - 2) // 2
+
+        "abcde".contains("cd") // true
+        "abc".repeat(3) // "abcabcabc"
+
+        Array.from(document.querySelectorAll('*')) // Returns a real Array
+        Array.of(1, 2, 3) // Similar to new Array(...), but without special one-arg behavior
+        [0, 0, 0].fill(7, 1) // [0,7,7]
+        [1,2,3].findIndex(x => x == 2) // 1
+        ["a", "b", "c"].entries() // iterator [0, "a"], [1,"b"], [2,"c"]
+        ["a", "b", "c"].keys() // iterator 0, 1, 2
+        ["a", "b", "c"].values() // iterator "a", "b", "c"
+
+        Object.assign(Point, { origin: new Point(0,0) })
+
+    ---
+    ### Binary and Octal Literals
+
+    Two new numeric literal forms are addded for binary (`b`) and octal (`o`).
+
+
+        0b111110111 === 503 // true
+        0o767 === 503 // true
+
+    ---
+    ### Promises
+
+    Promises are a library for asynchronous programming.  Promises are a first class representation of a value that may be made available in the future.  Promises are used in many existing JavaScript libraries.
+
+    
+        function timeout(duration = 0) {
+            return new Promise((resolve, reject) => {
+                setTimeout(resolve, duration);
+            })
+        }
+
+        var p = timeout(1000).then(() => {
+            return timeout(2000);
+        }).then(() => {
+            throw new Error("hmm");
+        }).catch(err => {
+            return Promise.all([timeout(100), timeout(200)]);
+        })
+    
+
+    ---
+
+    ### Reflect API
+    
+    Full reflection API exposing the runtime-level meta-operations on objects.  This is effectively the inverse of the Proxy API, and allows making calls corresponding to the same meta-operations as the proxy traps.  Especially useful for implementing proxies.
+
+
+        // No sample yet
+
+    ---
+    ### Tail Calls
+    Calls in tail-position are guaranteed to not grow the stack unboundedly.  Makes recursive algorithms safe in the face of unbounded inputs.
+
+        
+        function factorial(n, acc = 1) {
+            'use strict';
+            if (n <= 1) return acc;
+            return factorial(n - 1, n * acc);
+        }
+
+        // Stack overflow in most implementations today,
+        // but safe on arbitrary inputs in eS6
+        factorial(100000)
+        
+
+    ---
+     # Fontes e Referências
+
+    - [Funcionalidades ECMAScript 6](https://github.com/cerebrobr/es6features/blob/master/README-pt-br.md)
+    - [ES6 plans](https://wiki.mozilla.org/ES6_plans)
+    - [ECMAScript 6 Tools](https://github.com/addyosmani/es6-tools)
+    - [Brincando com ES6](http://matheusbrasil.com/brincando-com-es6-primeiros-passos/)
+    - [ES6: BRINCANDO COM O NOVO JS](http://jsrocks.org/pt-br/2014/11/es6-playing-with-the-new-javascript/)
+    - [MÓDULOS ES6 HOJE COM O 6TO5](http://jsrocks.org/pt-br/2014/10/es6-modules-today-with-6to5/)
+   
+  </textarea>
+  <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js">
+  </script>
+  <script>
+    var slideshow = remark.create();
+  </script>
+</body>
+</html>

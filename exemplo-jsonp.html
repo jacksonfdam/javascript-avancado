@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>JS Bin</title>
+</head>
+<body>
+
+<script>
+	window.meu_callback = function (resposta) {
+	    console.log(resposta);
+	    alert('O preco é: ' + resposta.preco);
+	};
+
+	var src = 'http://localhost:8081/api_result.html?cliente=2336&produto=45&quantidade=73&callback=meu_callback';
+	var script = document.createElement('script');
+	script.src = src;
+	document.body.appendChild(script);
+</script>
+</body>
+</html>

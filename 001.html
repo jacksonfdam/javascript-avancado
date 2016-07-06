@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2016 by jacksonfdam (http://jsbin.com/tazopa/4/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+	<script src="https://code.jquery.com/jquery.min.js"></script>
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>JS Bin</title>
+	<style id="jsbin-css">
+		.left{float:left;}
+		.right{float:right;}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<h3>
+					Produtos
+				</h3>
+				<ul id="listaprodutos">
+
+
+
+				</ul> 
+				<h3>
+					Carrinho
+				</h3>
+				<table class="table table-condensed">
+					<thead>
+						<tr>
+							<th>
+								#
+							</th>
+							<th>
+								Nome
+							</th>
+							<th>
+								Quantidade
+							</th>
+							<th>
+								Valor Unitário
+							</th>
+							<th>
+								Subtotal
+							</th>
+							<th>
+
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						
+
+					</tbody>
+				</table>
+				<div class="row clearfix">
+					<div class="col-md-12 column">
+						<span class="label label-warning right">0,00</span>
+						<span class="label label-success right">Total do Carrinho</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script id="jsbin-javascript">
+		function Carrinho() {
+			this.items  = [];
+			this.valorTotal = 0;
+			this.totalItens = 0;
+			this.adicionar = function(produto){
+				console.log('Produto Recebido :', produto);
+				if (this.items.length === 0) {
+					this.items.push(produto);
+				} else {
+					var found = false;
+					for (i = 0; i < this.items.length; i++) {
+						if (produto.nome === this.items[i].nome) {
+							this.items[i].quantidade += 1;
+							found = true;
+							break;
+						}
+					}
+					if (!found) {
+						this.items.push(produto);
+					}
+				}
+			}
+
+			this.remover = function(posicao){
+				this.items.shift(posicao,1);
+			}
+
+			this.recalcular = function(produto){
+				this.valorTotal = 0;
+				this.totalItens = 0;
+				for (i = 0; i < this.items.length; i++) {
+					this.totalItens += this.items[i].quantidade;
+					this.valorTotal += (parseInt(this.items[i].quantidade) * parseFloat(this.items[i].preco)).toFixed(2);
+				}
+			}
+
+			this.mudaQuantidadeItem = function(event){
+				var posicao = event.target.dataset.position;
+				var quantidade = event.target.dataset.quantidade;
+				this.items[posicao].quantidade = quantidade;
+				this.recalcular();
+			}
+
+			this.esvaziar = function(){
+				this.valorTotal = 0;
+				this.totalItens = 0;
+				this.items = [];
+			}
+
+			this.populaCarrinho = function() {
+				var tBody = document.querySelector('table tbody');
+				tBody.innerHTML = '';
+				for (i = 0; i < this.items.length; i++) {
+					tBody.innerHTML += '<tr> \
+					<td>' + (i + 1) + '</td> \
+					<td>' + this.items[i].nome + '</td>\
+					<td> <input type="number" value="' + this.items[i].quantidade + '" data-position="' + i + '" class="col-sm-6 quantidade" /> </td> \
+					<td>' + this.items[i].preco + '</td> \
+					<td>' + (parseFloat(this.items[i].preco) * parseFloat(this.items[i].quantidade)).toFixed(2) + '</td> \
+					</tr>';
+				}
+				var listaQuantidadeItem = document.querySelectorAll('input.quantidade');
+				for (var i = 0; i < listaQuantidadeItem.length; i++) {
+					listaQuantidadeItem[i].addEventListener('blur', carrinho.mudaQuantidadeItem, false);
+				}
+			}
+		}
+
+		function Produtos() {
+			this.items = [
+			{nome:'Cewin 500mg C/ 30 Comprimidos',preco:18.46, quantidade:2},
+			{nome:'Targifor C Efervescente C/ 16 Comprimidos',preco:29.38, quantidade:7},
+			{nome:'Shampoo A Seco Batiste Fresh 150ml',preco:17.58, quantidade:1},
+			{nome:'Inneov Fermete 60 Drágeas',preco:103.92, quantidade:3},
+			{nome:'Leite Aptamil 2 800g',preco:33.90, quantidade:2},
+			{nome:'Lencos Umedecidos Huggies Turma Monica C/96',preco: 12.84, quantidade:4}
+			];          
+
+			this.montaLista = function(){
+				document.querySelector('#listaprodutos').innerHTML = '';
+				for (i = 0; i < this.items.length; i++) {
+					document.querySelector('#listaprodutos').innerHTML += '<li>' + this.items[i].nome + ' - R$ ' + this.items[i].preco 
+					+ ' - <a href="#" class="comprar" data-position="' + i + '">Comprar</a></li>';
+				}
+
+				//EVENT LISTENERS
+				var linkComprar = document.querySelectorAll('a.comprar');
+				for (var i = 0; i < linkComprar.length; i++) {
+					linkComprar[i].addEventListener('click', function(event){
+						var posicao = event.target.dataset.position;
+						carrinho.adicionar(produtos.items[posicao]);
+						carrinho.populaCarrinho();
+					}, false);
+				}
+			}
+
+		}
+
+		var carrinho = new Carrinho();
+		var produtos = new Produtos();
+		produtos.montaLista();
+		carrinho.populaCarrinho();
+
+
+	</script>
+</body>
+</html>

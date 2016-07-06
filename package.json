@@ -1,0 +1,9 @@
+{
+  "name": "angularjs-labs",
+  "version": "0.0.1",
+  "description": "Exercicios da Aula de Angular",
+  "dependencies": {
+    "express": "*"
+   },
+  "engine": "node >=0.6.x"
+}
