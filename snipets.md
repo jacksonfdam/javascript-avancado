@@ -97,7 +97,32 @@ function JSClock() {
 
 var obj = new Object();
 
+function Eletrodomestico() {
+	this.ligado = false;
+	this.ligar = function() {
+		this.ligado = true;
+	}
+	this.desligar = function() {
+		this.ligado = false;
+	}
+}
 
+
+function Ventilador(velMax) {
+	var maximaPermitida = 5; /* Uso de encapsulamento */
+	var velocidadePadrao = 3; /* Variáveis privadas */
+	if (velMax > 0 && velMax <= maximaPermitida) {
+		this.velocidadeMaxima = velMax;
+	} else {
+		this.velocidadeMaxima = velocidadePadrao;
+	}
+}
+
+Ventilador.prototype = new Eletrodomestico(); /* Define o objeto protótipo */
+ventilador = new Ventilador(4);
+alert(ventilador.ligado); /* Retorna false */
+ventilador.ligar();
+alert(ventilador.ligado); /* Retorna true  */
 
 
 
