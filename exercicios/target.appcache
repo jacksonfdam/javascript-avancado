@@ -1,0 +1,10 @@
+CACHE MANIFEST
+/header-logo_v2.png
+/main.js
+/ex12.js
+
+NETWORK:
+*
+
+FALLBACK:
+* /offline.html

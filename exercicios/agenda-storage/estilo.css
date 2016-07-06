@@ -1,0 +1,32 @@
+﻿body{
+	font-family:Tahoma;
+}
+
+ul{
+	list-style:none;
+}
+
+ul label{
+	width:100px;
+	float:left;
+}
+
+#frmCadastro{
+	border:solid 1px;
+}
+
+#tblListar{
+	width:100%;
+	border:solid 1px;
+	text-align:left;
+   	border-collapse:collapse; 
+}
+
+#tblListar tbody tr{
+	border:solid 1px;
+	height:30px;
+}
+
+#tblListar thead{
+	background:beige;
+}
