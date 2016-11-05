@@ -1,4 +1,4 @@
-var siteUrl= 'http://localhost:8000';
+var siteUrl= 'http://localhost:8000/';
 
 if (typeof XMLHttpRequest === "undefined") {
   XMLHttpRequest = function () {
